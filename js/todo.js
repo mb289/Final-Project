@@ -1,62 +1,48 @@
-// An example Parse.js Backbone application based on the todo app by
-// [Jérôme Gravel-Niquet](http://jgn.me/). This demo uses Parse to persist
-// the todo items and provide user authentication and sessions.
-
-$(function() {
-
-  Parse.$ = jQuery;
-
-  // Initialize Parse with your Parse application javascript keys
-  Parse.initialize("your-application-id",
-                   "your-javascript-key");
+$(function(){
 
   // Todo Model
   // ----------
 
-  // Our basic Todo model has `content`, `order`, and `done` attributes.
-  var Todo = Parse.Object.extend("Todo", {
-    // Default attributes for the todo.
-    defaults: {
-      content: "empty todo...",
-      done: false
-    },
+  // Our basic **Todo** model has `title`, `order`, and `done` attributes.
+  var Todo = Backbone.Model.extend({
 
-    // Ensure that each todo created has `content`.
-    initialize: function() {
-      if (!this.get("content")) {
-        this.set({"content": this.defaults.content});
-      }
+    // Default attributes for the todo item.
+    defaults: function() {
+      return {
+        title: "empty todo...",
+        order: Todos.nextOrder(),
+        done: false
+      };
     },
 
     // Toggle the `done` state of this todo item.
     toggle: function() {
       this.save({done: !this.get("done")});
     }
-  });
 
-  // This is the transient application state, not persisted on Parse
-  var AppState = Parse.Object.extend("AppState", {
-    defaults: {
-      filter: "all"
-    }
   });
 
   // Todo Collection
   // ---------------
 
-  var TodoList = Parse.Collection.extend({
+  // The collection of todos is backed by *localStorage* instead of a remote
+  // server.
+  var TodoList = Backbone.Collection.extend({
 
     // Reference to this collection's model.
     model: Todo,
 
+    // Save all of the todo items under the `"todos-backbone"` namespace.
+    localStorage: new Backbone.LocalStorage("todos-backbone"),
+
     // Filter down the list of all todo items that are finished.
     done: function() {
-      return this.filter(function(todo){ return todo.get('done'); });
+      return this.where({done: true});
     },
 
     // Filter down the list to only todo items that are still not finished.
     remaining: function() {
-      return this.without.apply(this, this.done());
+      return this.where({done: false});
     },
 
     // We keep the Todos in sequential order, despite being saved by unordered
@@ -67,17 +53,18 @@ $(function() {
     },
 
     // Todos are sorted by their original insertion order.
-    comparator: function(todo) {
-      return todo.get('order');
-    }
+    comparator: 'order'
 
   });
+
+  // Create our global collection of **Todos**.
+  var Todos = new TodoList;
 
   // Todo Item View
   // --------------
 
   // The DOM element for a todo item...
-  var TodoView = Parse.View.extend({
+  var TodoView = Backbone.View.extend({
 
     //... is a list tag.
     tagName:  "li",
@@ -87,25 +74,25 @@ $(function() {
 
     // The DOM events specific to an item.
     events: {
-      "click .toggle"              : "toggleDone",
-      "dblclick label.todo-content" : "edit",
-      "click .todo-destroy"   : "clear",
-      "keypress .edit"      : "updateOnEnter",
-      "blur .edit"          : "close"
+      "click .toggle"   : "toggleDone",
+      "dblclick .view"  : "edit",
+      "click a.destroy" : "clear",
+      "keypress .edit"  : "updateOnEnter",
+      "blur .edit"      : "close"
     },
 
     // The TodoView listens for changes to its model, re-rendering. Since there's
-    // a one-to-one correspondence between a Todo and a TodoView in this
+    // a one-to-one correspondence between a **Todo** and a **TodoView** in this
     // app, we set a direct reference on the model for convenience.
     initialize: function() {
-      _.bindAll(this, 'render', 'close', 'remove');
-      this.model.bind('change', this.render);
-      this.model.bind('destroy', this.remove);
+      this.listenTo(this.model, 'change', this.render);
+      this.listenTo(this.model, 'destroy', this.remove);
     },
 
-    // Re-render the contents of the todo item.
+    // Re-render the titles of the todo item.
     render: function() {
-      $(this.el).html(this.template(this.model.toJSON()));
+      this.$el.html(this.template(this.model.toJSON()));
+      this.$el.toggleClass('done', this.model.get('done'));
       this.input = this.$('.edit');
       return this;
     },
@@ -117,14 +104,19 @@ $(function() {
 
     // Switch this view into `"editing"` mode, displaying the input field.
     edit: function() {
-      $(this.el).addClass("editing");
+      this.$el.addClass("editing");
       this.input.focus();
     },
 
     // Close the `"editing"` mode, saving changes to the todo.
     close: function() {
-      this.model.save({content: this.input.val()});
-      $(this.el).removeClass("editing");
+      var value = this.input.val();
+      if (!value) {
+        this.clear();
+      } else {
+        this.model.save({title: value});
+        this.$el.removeClass("editing");
+      }
     },
 
     // If you hit `enter`, we're through editing the item.
@@ -142,8 +134,12 @@ $(function() {
   // The Application
   // ---------------
 
-  // The main view that lets a user manage their todo items
-  var ManageTodosView = Parse.View.extend({
+  // Our overall **AppView** is the top-level piece of UI.
+  var AppView = Backbone.View.extend({
+
+    // Instead of generating a new element, bind to the existing skeleton of
+    // the App already present in the HTML.
+    el: $("#todoapp"),
 
     // Our template for the line of statistics at the bottom of the app.
     statsTemplate: _.template($('#stats-template').html()),
@@ -152,95 +148,43 @@ $(function() {
     events: {
       "keypress #new-todo":  "createOnEnter",
       "click #clear-completed": "clearCompleted",
-      "click #toggle-all": "toggleAllComplete",
-      "click .log-out": "logOut",
-      "click ul#filters a": "selectFilter"
+      "click #toggle-all": "toggleAllComplete"
     },
-
-    el: ".content",
 
     // At initialization we bind to the relevant events on the `Todos`
     // collection, when items are added or changed. Kick things off by
-    // loading any preexisting todos that might be saved to Parse.
+    // loading any preexisting todos that might be saved in *localStorage*.
     initialize: function() {
-      var self = this;
 
-      _.bindAll(this, 'addOne', 'addAll', 'addSome', 'render', 'toggleAllComplete', 'logOut', 'createOnEnter');
-
-      // Main todo management template
-      this.$el.html(_.template($("#manage-todos-template").html()));
-      
       this.input = this.$("#new-todo");
       this.allCheckbox = this.$("#toggle-all")[0];
 
-      // Create our collection of Todos
-      this.todos = new TodoList;
+      this.listenTo(Todos, 'add', this.addOne);
+      this.listenTo(Todos, 'reset', this.addAll);
+      this.listenTo(Todos, 'all', this.render);
 
-      // Setup the query for the collection to look for todos from the current user
-      this.todos.query = new Parse.Query(Todo);
-      this.todos.query.equalTo("user", Parse.User.current());
-        
-      this.todos.bind('add',     this.addOne);
-      this.todos.bind('reset',   this.addAll);
-      this.todos.bind('all',     this.render);
+      this.footer = this.$('footer');
+      this.main = $('#main');
 
-      // Fetch all the todo items for this user
-      this.todos.fetch();
-
-      state.on("change", this.filter, this);
-    },
-
-    // Logs out the user and shows the login view
-    logOut: function(e) {
-      Parse.User.logOut();
-      new LogInView();
-      this.undelegateEvents();
-      delete this;
+      Todos.fetch();
     },
 
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
     render: function() {
-      var done = this.todos.done().length;
-      var remaining = this.todos.remaining().length;
+      var done = Todos.done().length;
+      var remaining = Todos.remaining().length;
 
-      this.$('#todo-stats').html(this.statsTemplate({
-        total:      this.todos.length,
-        done:       done,
-        remaining:  remaining
-      }));
-
-      this.delegateEvents();
+      if (Todos.length) {
+        this.main.show();
+        this.footer.show();
+        this.footer.html(this.statsTemplate({done: done, remaining: remaining}));
+      } else {
+        this.main.hide();
+        this.footer.hide();
+      }
 
       this.allCheckbox.checked = !remaining;
-    },
-
-    // Filters the list based on which type of filter is selected
-    selectFilter: function(e) {
-      var el = $(e.target);
-      var filterValue = el.attr("id");
-      state.set({filter: filterValue});
-      Parse.history.navigate(filterValue);
-    },
-
-    filter: function() {
-      var filterValue = state.get("filter");
-      this.$("ul#filters a").removeClass("selected");
-      this.$("ul#filters a#" + filterValue).addClass("selected");
-      if (filterValue === "all") {
-        this.addAll();
-      } else if (filterValue === "completed") {
-        this.addSome(function(item) { return item.get('done') });
-      } else {
-        this.addSome(function(item) { return !item.get('done') });
-      }
-    },
-
-    // Resets the filters to display all todos
-    resetFilters: function() {
-      this.$("ul#filters a").removeClass("selected");
-      this.$("ul#filters a#all").addClass("selected");
-      this.addAll();
     },
 
     // Add a single todo item to the list by creating a view for it, and
@@ -250,158 +194,35 @@ $(function() {
       this.$("#todo-list").append(view.render().el);
     },
 
-    // Add all items in the Todos collection at once.
-    addAll: function(collection, filter) {
-      this.$("#todo-list").html("");
-      this.todos.each(this.addOne);
+    // Add all items in the **Todos** collection at once.
+    addAll: function() {
+      Todos.each(this.addOne, this);
     },
 
-    // Only adds some todos, based on a filtering function that is passed in
-    addSome: function(filter) {
-      var self = this;
-      this.$("#todo-list").html("");
-      this.todos.chain().filter(filter).each(function(item) { self.addOne(item) });
-    },
-
-    // If you hit return in the main input field, create new Todo model
+    // If you hit return in the main input field, create new **Todo** model,
+    // persisting it to *localStorage*.
     createOnEnter: function(e) {
-      var self = this;
       if (e.keyCode != 13) return;
+      if (!this.input.val()) return;
 
-      this.todos.create({
-        content: this.input.val(),
-        order:   this.todos.nextOrder(),
-        done:    false,
-        user:    Parse.User.current(),
-        ACL:     new Parse.ACL(Parse.User.current())
-      });
-
+      Todos.create({title: this.input.val()});
       this.input.val('');
-      this.resetFilters();
     },
 
     // Clear all done todo items, destroying their models.
     clearCompleted: function() {
-      _.each(this.todos.done(), function(todo){ todo.destroy(); });
+      _.invoke(Todos.done(), 'destroy');
       return false;
     },
 
     toggleAllComplete: function () {
       var done = this.allCheckbox.checked;
-      this.todos.each(function (todo) { todo.save({'done': done}); });
+      Todos.each(function (todo) { todo.save({'done': done}); });
     }
+
   });
 
-  var LogInView = Parse.View.extend({
-    events: {
-      "submit form.login-form": "logIn",
-      "submit form.signup-form": "signUp"
-    },
+  // Finally, we kick things off by creating the **App**.
+  var App = new AppView;
 
-    el: ".content",
-    
-    initialize: function() {
-      _.bindAll(this, "logIn", "signUp");
-      this.render();
-    },
-
-    logIn: function(e) {
-      var self = this;
-      var username = this.$("#login-username").val();
-      var password = this.$("#login-password").val();
-      
-      Parse.User.logIn(username, password, {
-        success: function(user) {
-          new ManageTodosView();
-          self.undelegateEvents();
-          delete self;
-        },
-
-        error: function(user, error) {
-          self.$(".login-form .error").html("Invalid username or password. Please try again.").show();
-          self.$(".login-form button").removeAttr("disabled");
-        }
-      });
-
-      this.$(".login-form button").attr("disabled", "disabled");
-
-      return false;
-    },
-
-    signUp: function(e) {
-      var self = this;
-      var username = this.$("#signup-username").val();
-      var password = this.$("#signup-password").val();
-      
-      Parse.User.signUp(username, password, { ACL: new Parse.ACL() }, {
-        success: function(user) {
-          new ManageTodosView();
-          self.undelegateEvents();
-          delete self;
-        },
-
-        error: function(user, error) {
-          self.$(".signup-form .error").html(error.message).show();
-          self.$(".signup-form button").removeAttr("disabled");
-        }
-      });
-
-      this.$(".signup-form button").attr("disabled", "disabled");
-
-      return false;
-    },
-
-    render: function() {
-      this.$el.html(_.template($("#login-template").html()));
-      this.delegateEvents();
-    }
-  });
-
-  // The main view for the app
-  var AppView = Parse.View.extend({
-    // Instead of generating a new element, bind to the existing skeleton of
-    // the App already present in the HTML.
-    el: $("#todoapp"),
-
-    initialize: function() {
-      this.render();
-    },
-
-    render: function() {
-      if (Parse.User.current()) {
-        new ManageTodosView();
-      } else {
-        new LogInView();
-      }
-    }
-  });
-
-  var AppRouter = Parse.Router.extend({
-    routes: {
-      "all": "all",
-      "active": "active",
-      "completed": "completed"
-    },
-
-    initialize: function(options) {
-    },
-
-    all: function() {
-      state.set({ filter: "all" });
-    },
-
-    active: function() {
-      state.set({ filter: "active" });
-    },
-
-    completed: function() {
-      state.set({ filter: "completed" });
-    }
-  });
-
-  var state = new AppState;
-
-  new AppRouter;
-  new AppView;
-  Parse.history.start();
 });

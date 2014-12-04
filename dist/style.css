@@ -8,6 +8,9 @@ box-sizing: border-box;
 body {
 font-family: Arial;
 background-color: #1f1f1f;
+background-image: url(http://freedwallpaper.com/wp-content/uploads/2014/11/Beauty-Wedding-Flowers.jpg);
+background-size: cover;
+background-repeat: no-repeat;
 padding: 50px;
 box-shadow: 0 2px 3px 0px rgba(0, 0, 0, 0.66);
 }
@@ -54,7 +57,7 @@ box-shadow: none;
 
 .btn {
   border: 2px solid #dcdcdc;
-  background: red;
+  background: rgb(59, 59, 179);
   color: #ffffff;
   font-size: 16px;
   line-height: 25px;
@@ -69,9 +72,11 @@ box-shadow: none;
   width: 250px;
   margin: 0 auto;
 }
-
+header {
+  text-align: center;
+}
 .btn:hover {
-  background-color: #cd2626;
+  background-color: rgb(98, 98, 255);
 }
 
 .login-link {
@@ -92,6 +97,20 @@ box-shadow: none;
 
 .sign-up:hover {
   color: red;
+}
+
+h2 {
+  text-align: center;
+  color:rgb(100, 94, 94);
+}
+
+h4 {
+  text-align: center;
+  color: rgb(100, 94, 94);
+}
+
+label {
+  color: rgb(100, 94, 94);
 }
 
 /*TODOD*/

@@ -1,97 +1,47 @@
-* {
-box-sizing: border-box;
-}
+/**
+ * BOX-SIZING
+ */
+*, *:before, *:after {
+  box-sizing: border-box; }
 
-*:focus {
-  outline: none;
-}
+/**
+ * GRIDS
+ */
+.grid {
+  width: 100%;
+  display: block;
+  font-size: 0;
+  text-align: justify;
+  position: relative; }
+  .grid > * {
+    font-size: medium;
+    text-align: left;
+    display: inline-block;
+    width: 100%;
+    vertical-align: top; }
+  .grid:after {
+    display: inline-block;
+    width: 100%;
+    content: "";
+    font-size: medium; }
+
+@media only screen and (min-width: 400px) {
+  .grid-2-400 > * {
+    width: 48%; } }
+
+@media only screen and (min-width: 600px) {
+  .grid-4-600 > * {
+    width: 23%; } }
+
+/**
+ * GENERAL
+ */
 body {
-font-family: Arial;
-background-color: #1f1f1f;
-padding: 50px;
-box-shadow: 0 2px 3px 0px rgba(0, 0, 0, 0.66);
-}
-.login {
-margin: 20px auto;
-width: 300px;
-}
-.login-screen {
-background-color: #FFF;
-padding: 20px;
-border-radius: 5px
-}
+  -webkit-transition: opacity 0.25s ease;
+          transition: opacity 0.25s ease; }
 
-.app-title {
-text-align: center;
-color: #777;
-}
-
-.login-form {
-text-align: center;
-margin-top:200px;
-}
-.control-group {
-margin-bottom: 10px;
-}
-
-input {
-text-align: center;
-background-color: #f8f8ff;
-border: 2px solid #dcdcdc;
-border-radius: 3px;
-font-size: 16px;
-font-weight: 200;
-padding: 10px 0;
-width: 250px;
-transition: border .5s;
-}
-
-input:focus {
-border: 2px solid #dcdcdc;
-box-shadow: none;
-}
-
-.btn {
-  border: 2px solid #dcdcdc;
-  background: red;
-  color: #ffffff;
-  font-size: 16px;
-  line-height: 25px;
-  padding: 10px 0;
-  text-decoration: none;
-  text-shadow: none;
-  border-radius: 3px;
-  box-shadow: none;
-  transition: 0.25s;
-  display: block;
-  width: 250px;
-  margin: 0 auto;
-}
-
-.btn:hover {
-  background-color: #cd2626;
-}
-
-.login-link {
-  font-size: 12px;
-  color: #666;
-  display: block;
-  margin-top: 12px;
-}
-.login-link:hover {
-  color: red;
-}
-.sign-up {
-  font-size: 12px;
-  color: #666;
-  display: block;
-  margin-top: 12px;
-}
-
-.sign-up:hover {
-  color: red;
-}
-
-/*TODOD*/
-
-
+/**
+ * form roles
+ */
+[role="form"] {
+  display: none; }

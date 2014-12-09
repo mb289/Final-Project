@@ -15,7 +15,7 @@ function app(){
         {url: "./Main/css/imgeffect.css"},
         {url: "./Main/css/magnific-popup.css"},
         {url: "./bower_components/bootstrap/dist/css/bootstrap.min.css"},
-        {url: "./css/dropzone.css"},
+        // {url: "./css/dropzone.css"},
         {url: "./css/chat.css"},
         {url: "./dist/style.css"},
 
@@ -37,7 +37,7 @@ function app(){
         {url: "./js/views/home.js"},
         {url: "./js/views/profile.js"},
         {url: "./js/todo.js"},
-        {url: "./js/dropzone.js"},
+     {url: "./js/dropzone.js"},
         {url: "./js/chat.js"},
 
 

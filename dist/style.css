@@ -71,7 +71,7 @@ body {
             transform: translateY(0); } }
 
 #todoapp {
-  background: #80FFBC;
+  background: #F1FFF8;
   padding: 20px;
   margin-bottom: 40px;
   -ms-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 6px 0;
@@ -85,7 +85,7 @@ body {
     text-align: center;
     padding: 0 0 10px 0; }
   #todoapp input[type="text"] {
-    width: 466px;
+    width: 100%;
     font-size: 24px;
     font-family: inherit;
     line-height: 1.4em;

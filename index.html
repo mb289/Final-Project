@@ -199,11 +199,7 @@
 
 		<!--Chat Area-->
 		<div class="chatroom" id="chat-area" style="border-top: 1px solid black">
-		  <!--   <div class="wrapper">
-		        <h2 style="text-align:center">Chatroom</h2>
-		        <hr>
-		        <img src="http://www.bride.ca/wedding-ideas/images/Blog/Flowers/WeddingSeason/The-Perfect-Place-Florist.jpg" />
-		    </div> -->
+	
              <section class="container chat js-chat">
         <header class="row l-header">
             <div class="col-xs-12">
@@ -280,11 +276,9 @@
 		<!-- <div class="pictures" id="picture-save" style = "border-top: 1px solid black"> -->
 		<div id="spin"></div>
 <h2>Picture Drop Zone</h2>
-<form action="/file-upload" class="dropzone" opacity>
-  <div class="fallback">
-    <input name="file" type="file" multiple />
-  </div>
-</form>
+<label id="dropzone" class="dropzone">Drag and Drop Images Here</label>
+<input type="file" id="files" name="files[]" multiple />
+<div id="images-wrapper"></div>
 
     </div>
 

@@ -76,7 +76,7 @@ body {
 }
 
 //colors
-$lightgreen: #80FFBC;
+$lightgreen: #F1FFF8;
 $black_20: rgba(0, 0, 0, 0.2);
 $color_mountain_mist_approx: #999999;
 $color_celeste_approx: #cccccc;
@@ -117,7 +117,7 @@ $font_0: inherit;
     }
 
     input[type="text"] {
-        width: 466px;
+        width: 100%;
         font-size: 24px;
         font-family: $font_0;
         line-height: 1.4em;

@@ -8,8 +8,8 @@ function handleFileSelect(evt) {
 
     reader.onload = function(event) {
       var image = '<img src="' + event.target.result + '" style="' +
-        'max-width: 300px;' +
-        'max-height: 300px;' +
+        'max-width: 150px;' +
+        'max-height: 150px;' +
         'display: inline-block;' +
         'vertical-align: middle;' +
          'margin-left: 15px;' +

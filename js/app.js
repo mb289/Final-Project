@@ -28,6 +28,7 @@ function app(){
         {url: "./bower_components/bootstrap/dist/js/bootstrap.min.js"},
         {url: "./bower_components/jquery-serialize-object/dist/jquery.serialize-object.min.js"},
         {url: "./bower_components/backbone/examples/backbone.localStorage.js"},
+        {url: "./js/gallery.js"},
         {url: "./js/utilities.js"},
 
 
@@ -37,8 +38,9 @@ function app(){
         {url: "./js/views/home.js"},
         {url: "./js/views/profile.js"},
         {url: "./js/todo.js"},
-     {url: "./js/dropzone.js"},
+        {url: "./js/dropzone.js"},
         {url: "./js/chat.js"},
+
 
 
         // jquery plugins

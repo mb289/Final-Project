@@ -76,7 +76,7 @@ body {
 }
 
 //colors
-$lightgreen: #F1FFF8;
+$lightgreen: #8AF798;
 $black_20: rgba(0, 0, 0, 0.2);
 $color_mountain_mist_approx: #999999;
 $color_celeste_approx: #cccccc;
@@ -84,7 +84,7 @@ $color_tapa_approx: #777777;
 $color_tuatara_approx: #383636;
 $color_chetwode_blue_approx: #7a90e7;
 $color_gallery_approx: #ededed;
-$black_10: rgba(0, 0, 0, 0.1);
+$black_10: rgba(253, 253, 253, 0.1);
 $black_15: rgba(0, 0, 0, 0.15);
 $black_30: rgba(0, 0, 0, 0.3);
 $white_80: rgba(255, 255, 255, 0.8);
@@ -96,7 +96,7 @@ $font_0: inherit;
 #todoapp {
     background: $lightgreen;
     padding: 20px;
-    margin-bottom: 40px;
+    margin-bottom: 0px;
     -webkit-box-shadow: $black_20 0 2px 6px 0;
     -moz-box-shadow: $black_20 0 2px 6px 0;
     -ms-box-shadow: $black_20 0 2px 6px 0;
@@ -136,8 +136,8 @@ $font_0: inherit;
         display: none;
         margin: 0 -20px -20px;
         overflow: hidden;
-        color: $color_tuatara_approx;
-        background: #7A90E7;
+        color: white;
+        background: #1A4783;
         border-top: 1px solid $color_gallery_approx;
         padding: 0 20px;
         line-height: 37px;
@@ -218,7 +218,7 @@ $font_0: inherit;
     line-height: 20px;
     text-decoration: none;
     background: $black_10;
-    color: $color_tuatara_approx;
+    color: #F5EDED;
     font-size: 11px;
     margin-top: 8px;
     margin-bottom: 8px;
@@ -251,11 +251,12 @@ $font_0: inherit;
     }
 }
 #instructions {
-    margin: 10px auto;
+    margin: 1px auto;
     color: $color_tapa_approx;
     //Instead of the line below you could use @includetext-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
     text-shadow: $white_80 0 1px 0;
     text-align: center;
+    background-color: #8AF798;
     a {
         color: $color_azure_approx;
     }
@@ -362,4 +363,8 @@ figcaption {
         cursor: pointer;
         opacity: 1;
     }
+}
+
+#Github:hover{
+
 }

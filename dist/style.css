@@ -71,9 +71,9 @@ body {
             transform: translateY(0); } }
 
 #todoapp {
-  background: #F1FFF8;
+  background: #8AF798;
   padding: 20px;
-  margin-bottom: 40px;
+  margin-bottom: 0px;
   -ms-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 6px 0;
   -o-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 6px 0;
   box-shadow: rgba(0, 0, 0, 0.2) 0 2px 6px 0;
@@ -100,8 +100,8 @@ body {
     display: none;
     margin: 0 -20px -20px;
     overflow: hidden;
-    color: #383636;
-    background: #7A90E7;
+    color: white;
+    background: #1A4783;
     border-top: 1px solid #ededed;
     padding: 0 20px;
     line-height: 37px;
@@ -162,8 +162,8 @@ body {
   float: right;
   line-height: 20px;
   text-decoration: none;
-  background: rgba(0, 0, 0, 0.1);
-  color: #383636;
+  background: rgba(253, 253, 253, 0.1);
+  color: #F5EDED;
   font-size: 11px;
   margin-top: 8px;
   margin-bottom: 8px;
@@ -184,10 +184,11 @@ body {
     top: 1px; }
 
 #instructions {
-  margin: 10px auto;
+  margin: 1px auto;
   color: #777777;
   text-shadow: rgba(255, 255, 255, 0.8) 0 1px 0;
-  text-align: center; }
+  text-align: center;
+  background-color: #8AF798; }
   #instructions a {
     color: #336699; }
 
@@ -268,3 +269,4 @@ figcaption {
   .prev:hover {
     cursor: pointer;
     opacity: 1; }
+

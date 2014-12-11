@@ -251,7 +251,7 @@ $font_0: inherit;
     }
 }
 #instructions {
-    margin: 1px auto;
+    margin: 0px auto;
     color: $color_tapa_approx;
     //Instead of the line below you could use @includetext-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
     text-shadow: $white_80 0 1px 0;

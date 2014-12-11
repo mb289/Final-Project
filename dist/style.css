@@ -184,7 +184,7 @@ body {
     top: 1px; }
 
 #instructions {
-  margin: 1px auto;
+  margin: 0px auto;
   color: #777777;
   text-shadow: rgba(255, 255, 255, 0.8) 0 1px 0;
   text-align: center;
